@@ -1,0 +1,11 @@
+name: CI for Scoring Engine
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+jobs:
+  build-and-publish:
+    uses: LotusCapital2025/cq-infrastructure/.github/workflows/reusable-ci-publish.yml@develop
+    with:
+      service_name: cq-scoring-engine
