@@ -1,0 +1,46 @@
+name: Push code to the VM
+
+on:
+  push:
+    branches: 
+      - "main"
+
+env:
+  VM_REPO_WORK_FOLDER: ${{ secrets.VM_REPO_WORK_FOLDER }}
+  VM_USERNAME: ${{ secrets.VM_USERNAME }}
+  VM_PUBLIC_IP: ${{ secrets.VM_PUBLIC_IP }}
+  VM_SSH_KEY: ${{ secrets.VM_SSH_KEY }}
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.1
+        with:
+          ssh-private-key: ${{ secrets.VM_SSH_KEY }}
+
+      - name: Add VM to known hosts
+        run: |
+          ssh-keyscan -H $VM_PUBLIC_IP >> ~/.ssh/known_hosts
+
+      - name: Test VM connection
+        run: ssh $VM_USERNAME@$VM_PUBLIC_IP "echo 'VM reachable ✅'"
+        
+      - name: Prepare VM folder
+        run: |
+          ssh $VM_USERNAME@$VM_PUBLIC_IP "rm -rf $VM_REPO_WORK_FOLDER && mkdir -p $VM_REPO_WORK_FOLDER"
+
+      - name: Copy files
+        run: scp -r * $VM_USERNAME@$VM_PUBLIC_IP:$VM_REPO_WORK_FOLDER
+
+      - name: Validate deployment
+        run: ssh $VM_USERNAME@$VM_PUBLIC_IP "ls -la $VM_REPO_WORK_FOLDER && echo 'Files deployed ✅'"
+
