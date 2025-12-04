@@ -1,0 +1,65 @@
+social:
+  reddit_pushshift:
+    type: "social"
+    enabled: false
+  twitter_nitter:
+    type: "social"
+    enabled: false
+
+micros:
+  coindesk:
+    type: "asset_news"
+    enabled: true
+    endpoint: "https://www.coindesk.com/arc/outboundfeeds/rss/"
+  cointelegraph:
+    type: "asset_news"
+    enabled: true
+    endpoint: "https://cointelegraph.com/rss"
+  binance_labs:
+    type: "asset_news"
+    enabled: true
+    endpoint: "https://medium.com/feed/binance-labs"
+
+macros:
+  fxstreet:
+    type: "macro_news"
+    enabled: true
+    endpoint: "https://www.fxstreet.com/rss/news"
+  tradingeconomics_news:
+    type: "macro_news"
+    enabled: true
+    endpoint: "https://api.tradingeconomics.com/markets/crypto?client=guest:guest"
+
+sector:
+  cnbc:
+    type: "news"
+    enabled: true
+    endpoint: "https://www.cnbc.com/id/10000664/device/rss/rss.html"
+  yahoo_finance_rss:
+    type: "news"
+    enabled: true
+    endpoint: "https://feeds.finance.yahoo.com/rss/2.0/headline?s=^GSPC&region=US&lang=en-US"
+
+volatility:
+  btc_vol:
+    type: "volatility"
+    enabled: true
+    endpoint: "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart?vs_currency=usd&days=30"
+  eth_vol:
+    type: "volatility"
+    enabled: true
+    endpoint: "https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=30"
+  synthetic_cvi:
+    type: "volatility"
+    enabled: true
+    endpoint: null
+
+calendar:
+  world_bank:
+    type: "calendar"
+    enabled: true
+    endpoint: "https://api.worldbank.org/v2/indicator?format=json&per_page=2000"
+  tradingeconomics_calendar:
+    type: "calendar"
+    enabled: true
+    endpoint: "https://api.tradingeconomics.com/calendar?client=guest:guest"
