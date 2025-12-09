@@ -24,8 +24,7 @@ This layer exposes HTTP endpoints for asset sentiment analysis, system health ch
 | **FastAPI** | API framework |
 | **Uvicorn** | ASGI server |
 | **Poetry** | Dependency & environment manager |
-| **pydantic‑settings** | Configuration management /
- environment variables |
+| **pydantic‑settings** | Configuration management /environment variables |
 | **clickhouse‑driver** | Connects to ClickHouse database |
 | **python‑dotenv** | Loads `.env` configs |
 | **Pandas** | Data handling for scoring pipeline |
@@ -170,5 +169,6 @@ The API layer is completely *deployment‑ready* and can run as an independe
 ---
 
 **Author:** Zrayouil karima
+
 
 
