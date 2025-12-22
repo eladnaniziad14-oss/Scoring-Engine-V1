@@ -14,14 +14,14 @@ x-airflow-common:
     _PIP_ADDITIONAL_REQUIREMENTS: "kafka-python-ng==2.2.2 ${_PIP_ADDITIONAL_REQUIREMENTS:-}"
 
   volumes:
-    - ${AIRFLOW_PROJ_DIR:-.}airflow2/dags:/opt/airflow/dags
-    - ${AIRFLOW_PROJ_DIR:-.}airflow2/logs:/opt/airflow/logs
-    - ${AIRFLOW_PROJ_DIR:-.}airflow2/logs/dag_processor_manager:/opt/airflow/logs/dag_processor_manager
-    - ${AIRFLOW_PROJ_DIR:-.}airflow2/logs/scheduler:/opt/airflow/logs/scheduler
-    - ${AIRFLOW_PROJ_DIR:-.}airflow2/config:/opt/airflow/config
-    - ${AIRFLOW_PROJ_DIR:-.}airflow2/plugins:/opt/airflow/plugins
-    - ${AIRFLOW_PROJ_DIR:-.}airflow2/script/entrypoint.sh:/opt/airflow/script/entrypoint.sh
-    - ${AIRFLOW_PROJ_DIR:-.}airflow2/requirements.txt:/opt/airflow/requirements.txt
+    - ${AIRFLOW_PROJ_DIR:-.}/.airflow2/dags:/opt/airflow/dags
+    - ${AIRFLOW_PROJ_DIR:-.}/.airflow2/logs:/opt/airflow/logs
+    - ${AIRFLOW_PROJ_DIR:-.}/.airflow2/logs/dag_processor_manager:/opt/airflow/logs/dag_processor_manager
+    - ${AIRFLOW_PROJ_DIR:-.}/.airflow2/logs/scheduler:/opt/airflow/logs/scheduler
+    - ${AIRFLOW_PROJ_DIR:-.}/.airflow2/config:/opt/airflow/config
+    - ${AIRFLOW_PROJ_DIR:-.}/.airflow2/plugins:/opt/airflow/plugins
+    - ${AIRFLOW_PROJ_DIR:-.}/.airflow2/script/entrypoint.sh:/opt/airflow/script/entrypoint.sh
+    - ${AIRFLOW_PROJ_DIR:-.}/.airflow2/requirements.txt:/opt/airflow/requirements.txt
 
     - /var/run/docker.sock:/var/run/docker.sock
 
