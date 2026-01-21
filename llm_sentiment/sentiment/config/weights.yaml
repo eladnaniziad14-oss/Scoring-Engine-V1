@@ -1,0 +1,7 @@
+weights:
+  micros: 0.40
+  macros: 0.25
+  sector: 0.20
+  volatility: 0.15
+  social: 0.10
+  calendar: 0.05

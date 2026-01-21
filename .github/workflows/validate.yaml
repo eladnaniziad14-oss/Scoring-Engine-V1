@@ -1,0 +1,24 @@
+name: Check root files
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  check-root-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check README.md exists (case-insensitive)
+        run: |
+          # convert all root files to lowercase and check
+          if ! ls | tr '[:upper:]' '[:lower:]' | grep -qw "readme.md"; then
+            echo "❌ README.md is missing!"
+            exit 1
+          fi
+
