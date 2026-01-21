@@ -1,0 +1,42 @@
+name: Backup Metamodel-Scoring-Engine Repo
+
+on:
+  push:
+    branches: [ "develop" ]
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zip curl
+          curl https://rclone.org/install.sh | sudo bash
+
+      - name: Create backup archive
+        run: |
+          set -eux
+          TS="$(date +%Y%m%d-%H%M%S)"
+          REPO="${{ github.event.repository.name }}"
+          ZIP="${REPO}-develop-${TS}.zip"
+
+          zip -r "$ZIP" . \
+            -x ".git/*" \
+            -x "**/.env" -x "**/.env.*" \
+            -x "target/*" -x "node_modules/*"
+
+          echo "ZIP_FILE=$ZIP" >> $GITHUB_ENV
+
+      - name: Upload to Google Drive
+        env:
+          RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
+        run: |
+          set -eux
+          mkdir -p ~/.config/rclone
+          echo "$RCLONE_CONF" > ~/.config/rclone/rclone.conf
+          rclone copy "$ZIP_FILE" "GITHUB_BACKUP:GITHUB-BACKUP/BACKEND" --progress
