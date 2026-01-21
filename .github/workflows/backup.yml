@@ -40,3 +40,4 @@ jobs:
           mkdir -p ~/.config/rclone
           echo "$RCLONE_CONF" > ~/.config/rclone/rclone.conf
           rclone copy "$ZIP_FILE" "GITHUB_BACKUP:GITHUB-BACKUP/BACKEND" --progress
+
