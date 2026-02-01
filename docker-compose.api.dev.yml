@@ -6,5 +6,5 @@ services:
       - ./src:/app/src
       - ./llm_sentiment:/app/llm_sentiment
       - ./consumers:/app/consumers
-    command: uvicorn src.main:app --host 0.0.0.0 --port 80 --reload
+    command: uvicorn python -m src.main:app --host 0.0.0.0 --port 80 --reload
 
