@@ -1,0 +1,17 @@
+pandas
+requests
+PyYAML
+beautifulsoup4
+lxml
+transformers
+torch
+pyarrow
+fastparquet
+python-dateutil
+tqdm
+fastapi 
+uvicorn
+pydantic_settings
+clickhouse-driver
+vaderSentiment
+apscheduler

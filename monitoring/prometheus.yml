@@ -1,0 +1,38 @@
+global:
+  scrape_interval: 15s        # scrape every 15 seconds
+  evaluation_interval: 15s    # evaluate rules every 15 seconds
+
+# Optional metadata about this Prometheus instance
+global:
+  external_labels:
+    monitor: 'sentiment-monitor'
+
+# Rules and alert files (optional for now)
+rule_files: []
+
+scrape_configs:
+  # The Prometheus server scrapes itself
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  # Monitor your FastAPI sentiment service
+  - job_name: 'sentiment-api'
+    metrics_path: /metrics          # adjust if you expose custom metrics
+    static_configs:
+      - targets: ['sentiment-api:8001']
+
+  # Monitor Airflow webserver health endpoint
+  - job_name: 'airflow-webserver'
+    metrics_path: /health
+    metrics_path: /
+    static_configs:
+      - targets: ['airflow-webserver:8080']
+
+  # Monitor ClickHouse through HTTP port (optional)
+  - job_name: 'clickhouse'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['clickhouse:8123']
+
+ 

@@ -1,0 +1,42 @@
+# ---- Python & virtual envs ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pdb
+*.egg-info/
+*.eggs/
+*.pytest_cache/
+venv/
+# ---- Logs / local data ----
+.log
+logs/
+.airflow2/logs/
+# data/
+
+
+
+# ---- Build / packaging ----
+build/
+dist/
+*.egg
+*.whl
+
+# ---- IDE / editor files ----
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ---- Docker / Compose ----
+**/.dockerignore
+docker-compose.override.yml
+
+
+
+
+
+# ---- Misc ----
+__pycache__/
+tmp/
