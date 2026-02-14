@@ -1,4 +1,4 @@
-name: Backup Metamodel-Scoring-Engine Repo
+name: Backup Metamodel Scoring-Engine Repo
 
 on:
   push:
@@ -35,9 +35,9 @@ jobs:
       - name: Upload to Google Drive
         env:
           RCLONE_CONF: ${{ secrets.RCLONE_CONF }}
+          DRIVE_SUBFOLDER: ${{ secrets.DRIVE_SUBFOLDER }}
         run: |
           set -eux
           mkdir -p ~/.config/rclone
           echo "$RCLONE_CONF" > ~/.config/rclone/rclone.conf
-          rclone copy "$ZIP_FILE" "GITHUB_BACKUP:GITHUB-BACKUP/BACKEND" --progress
-
+          rclone copy "$ZIP_FILE" "GITHUB_BACKUP:GITHUB-BACKUP/${DRIVE_SUBFOLDER}" --progress
