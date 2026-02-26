@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ---- Python & virtual envs ----
 __pycache__/
 *.py[cod]
@@ -40,3 +41,36 @@ docker-compose.override.yml
 # ---- Misc ----
 __pycache__/
 tmp/
+=======
+# --- Secrets ---
+.env
+.env.*
+config.py
+
+# --- Python junk ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.log
+
+# --- Virtualenv ---
+.venv/
+venv/
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- Outputs / generated artifacts ---
+outputs/
+*.csv
+*.json
+!.gitkeep
+
+# --- IDEs ---
+.idea/
+.vscode/
+*.iml
+>>>>>>> a000311 (Initial commit: scoring engine model)
