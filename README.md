@@ -58,7 +58,7 @@ This final score is the recommended ranking score.
 Typical core files:
 - `main.py` — loads predictions, runs scoring, exports outputs
 - `scoring.py` — combines technical/fundamental/momentum + entry quality
-- `Technical_bias.py` — multi-timeframe technical bias (daily-weighted)
+- `technical_bias.py` — multi-timeframe technical bias (daily-weighted)
 - `fundamentals.py` — hybrid fundamentals layer (VADER/FinBERT + macro/events)
 - `market_data.py` — OHLCV fetch + momentum + ATR + entry inputs
 - `entry_quality.py` — entry/target scoring (bootstrap + ATR/VWAP + realism)

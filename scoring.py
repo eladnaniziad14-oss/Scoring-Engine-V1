@@ -4,7 +4,7 @@ from __future__ import annotations
 import numpy as np
 
 from fundamentals import get_fundamental_score
-from Technical_bias import get_technical_bias
+from technical_bias import get_technical_bias
 from market_data import get_entry_inputs
 
 from entry_quality import (
