@@ -1,0 +1,31 @@
+# --- Secrets ---
+.env
+.env.*
+config.py
+
+# --- Python junk ---
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+*.log
+
+# --- Virtualenv ---
+.venv/
+venv/
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- Outputs / generated artifacts ---
+outputs/
+*.csv
+*.json
+!.gitkeep
+
+# --- IDEs ---
+.idea/
+.vscode/
+*.iml
