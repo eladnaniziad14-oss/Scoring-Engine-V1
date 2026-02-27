@@ -1,4 +1,3 @@
-# main.py
 from __future__ import annotations
 
 import json
@@ -9,12 +8,12 @@ from typing import List, Dict, Any
 import pandas as pd
 from binance.client import Client
 
-from config import BINANCE_API_KEY,BINANCE_API_SECRET
 from data_loader import load_predictions_json
 from market_data import get_momentums
 from scoring import score_prediction
 from ranking import add_selection_flags, get_selected
-
+from dotenv import load_dotenv
+load_dotenv()
 
 # =========================
 # CONFIG (NO SECRETS HERE)
@@ -37,6 +36,63 @@ MIN_STRUCTURAL = 0.55
 MIN_SCORE = None  # don't hard-gate final score by default
 
 
+def to_boss_json_records(full_df: pd.DataFrame) -> list[dict]:
+    """
+    Convert your engine output dataframe into the boss JSON schema.
+    Fields that you don't have yet are set to None.
+    """
+    records: list[dict] = []
+
+    for _, row in full_df.iterrows():
+        # normalize direction to LONG/SHORT
+        d = str(row.get("direction", "")).upper()
+        if d in ("BUY", "LONG"):
+            direction = "LONG"
+        elif d in ("SELL", "SHORT"):
+            direction = "SHORT"
+        else:
+            direction = d or "LONG"
+
+        # horizon formatting like "4H"
+        horizon_hours = row.get("horizon_hours", None)
+        try:
+            horizon_str = f"{int(horizon_hours)}H" if horizon_hours is not None else None
+        except Exception:
+            horizon_str = None
+
+        move_pct = row.get("move_pct", None)
+        move_in_pct = None
+        try:
+            if move_pct is not None:
+                move_in_pct = float(move_pct) * 100.0
+        except Exception:
+            move_in_pct = None
+
+        scored_conf = row.get("final_reliability_score", row.get("confidence_reliability_score", 0.0))
+        try:
+            scored_conf = float(scored_conf)
+        except Exception:
+            scored_conf = 0.0
+
+        rec = {
+            "timestamp": row.get("timestamp"),
+            "user_id": row.get("user_id"),
+            "prediction_id": row.get("submission_id"),
+            "asset": row.get("asset"),
+            "direction": direction,
+            "move_in_pct": move_in_pct,
+            "scored_confidence": scored_conf,
+            "horizon": horizon_str,
+            "realized_move_pct": None,
+            "hit": None,
+            "hit_ratio": None,
+            "sharpe_ratio": None,
+        }
+        records.append(rec)
+
+    return records
+
+
 def _is_crypto_asset(asset: str) -> bool:
     a = (asset or "").upper().strip()
     return a in ("BTC", "ETH", "SOL") or a.endswith("USDT")
@@ -50,7 +106,15 @@ def _jsonify_cell(x: Any) -> Any:
 
 
 def main() -> None:
+    # -------------------------
+    # 0) Output directory
+    # -------------------------
+    out_dir = Path("outputs")
+    out_dir.mkdir(exist_ok=True)
+
+    # -------------------------
     # Binance client is only required for crypto
+    # -------------------------
     binance_client = None
     if BINANCE_API_KEY and BINANCE_API_SECRET:
         binance_client = Client(BINANCE_API_KEY, BINANCE_API_SECRET)
@@ -61,7 +125,6 @@ def main() -> None:
     if PREDICTIONS_FILE and Path(PREDICTIONS_FILE).exists():
         preds: List[Dict[str, Any]] = load_predictions_json(PREDICTIONS_FILE)
     else:
-        # fallback demo list
         preds = [
             {
                 "user_id": "U1001",
@@ -103,10 +166,7 @@ def main() -> None:
     scored_rows: List[Dict[str, Any]] = []
 
     for p in preds:
-        # momentums uses Binance for crypto + Yahoo for others
         momentums = get_momentums(p, binance_client=binance_client)
-
-        # scoring() already includes entry_quality (via your updated scoring.py)
         row = score_prediction(p, binance_client=binance_client, momentums=momentums)
         scored_rows.append(row)
 
@@ -136,30 +196,36 @@ def main() -> None:
     # -------------------------
     # 5) Export outputs
     # -------------------------
-    out_dir = Path("outputs")
-    out_dir.mkdir(exist_ok=True)
-
+    # FULL ranked export
     full_export = full.copy()
     for col in ["fundamental_breakdown", "technical_breakdown", "momentums", "entry_breakdown"]:
         if col in full_export.columns:
             full_export[col] = full_export[col].apply(_jsonify_cell)
 
-    (out_dir / "full_ranked.csv").write_text(full_export.to_csv(index=False), encoding="utf-8")
-    (out_dir / "full_ranked.json").write_text(full_export.to_json(orient="records", indent=2), encoding="utf-8")
+    full_export.to_csv(out_dir / "full_ranked.csv", index=False, encoding="utf-8")
+    full_export.to_json(out_dir / "full_ranked.json", orient="records", indent=2)
 
+    # SELECTED export
     if selected is not None and not selected.empty:
         selected_export = selected.copy()
         for col in ["fundamental_breakdown", "technical_breakdown", "momentums", "entry_breakdown"]:
             if col in selected_export.columns:
                 selected_export[col] = selected_export[col].apply(_jsonify_cell)
 
-        (out_dir / "selected.csv").write_text(selected_export.to_csv(index=False), encoding="utf-8")
-        (out_dir / "selected.json").write_text(selected_export.to_json(orient="records", indent=2), encoding="utf-8")
+        selected_export.to_csv(out_dir / "selected.csv", index=False, encoding="utf-8")
+        selected_export.to_json(out_dir / "selected.json", orient="records", indent=2)
         print("✅ Saved SELECTED to: outputs/selected.csv and outputs/selected.json")
     else:
         print("ℹ️ No SELECTED rows to export (empty selection).")
 
     print("✅ Saved FULL ranked to: outputs/full_ranked.csv and outputs/full_ranked.json")
+
+    # Boss-format JSON export
+    boss_json = to_boss_json_records(full)
+    boss_json_path = out_dir / "boss_format.json"
+    with open(boss_json_path, "w", encoding="utf-8") as f:
+        json.dump(boss_json, f, ensure_ascii=False, indent=2)
+    print(f"✅ Saved boss-format JSON to: {boss_json_path}")
 
     # -------------------------
     # 6) Print table
